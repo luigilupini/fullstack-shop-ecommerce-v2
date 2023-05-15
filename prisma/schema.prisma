@@ -68,15 +68,16 @@ generator client {
 // Create a schema file in prisma/schema.prisma similar to this one:
 // This schema is adapted for use in Prisma and based upon our main schema
 model User {
-  id            String    @id @default(uuid())
-  name          String
-  email         String?   @unique
-  emailVerified DateTime? @map("email_verified")
-  image         String?
-  createdAt     DateTime  @default(now())
-  updatedAt     DateTime  @updatedAt
-  accounts      Account[]
-  sessions      Session[]
+  id               String    @id @default(uuid())
+  name             String
+  email            String?   @unique
+  emailVerified    DateTime? @map("email_verified")
+  image            String?
+  createdAt        DateTime  @default(now())
+  updatedAt        DateTime  @updatedAt
+  accounts         Account[]
+  sessions         Session[]
+  stripeCustomerId String?
 
   @@map("users")
 }
