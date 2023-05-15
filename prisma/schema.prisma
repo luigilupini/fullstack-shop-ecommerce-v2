@@ -1,0 +1,39 @@
+// PRISMA: CREATE FOLDER STRUCTURE MANUALLY ⭐️
+// Instead of running the `npx prisma init` command, you can create the folder
+// structure manually. This might be useful if you want more control over the 
+// initialization process. Within your project root, create a new folder named 
+// 'prisma' and within it, create a new file called `schema.prisma`.
+
+// PRISMA: DEFINE YOUR DATA SOURCE AND GENERATOR ⭐️
+// In the `schema.prisma` file, define your data source and generator, as well
+// as your database models. The 'datasource' block configures the connection to
+// your database and the 'generator' block tells Prisma to generate a client
+datasource db {
+  provider = "postgresql" // Specifies the database provider (e.g., postgresql, mysql, sqlite, sqlserver).
+  url      = env("DATABASE_URL") // Connection URL to the database, stored as an environment variable for security.
+}
+
+// A 'generator' tells Prisma to generate a client for a specified language.
+// Specifies the client language (in this case, JavaScript).
+generator client {
+  provider = "prisma-client-js"
+}
+
+// PRISMA: DEFINE YOUR DATABASE MODELS ⭐️
+// Define your database models in the 'model' block. Models in Prisma correspond
+// to tables in your database. Each field within a model, represents a column in
+// the database table. Relationships between models (one-to-one, one-to-many) we 
+// can define as well (see below).
+model Todo {
+  // 'id' field is unique and defaults to a cuid when a new Todo is created.
+  id          String  @unique @default(cuid())
+  title       String
+  description String? // The '?' denotes this field as optional.
+}
+
+// PRISMA: SYNC YOUR MODELS WITH THE DATABASE (MIGRATE) ⭐️
+// To sync your models with the database (i.e., create the database tables), run
+// `npx prisma migrate dev` command in your terminal. This generates & executes
+// the necessary SQL migration files. Remember `DATABASE_URL` is and environment
+// variable that should point to your actual database hosted in this case on an
+// online service like railway.app 🚃.
