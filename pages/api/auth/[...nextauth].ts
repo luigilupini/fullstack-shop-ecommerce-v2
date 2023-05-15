@@ -24,7 +24,7 @@ import Stripe from 'stripe';
 // This is the main export from this file. A `NextAuth` function that configures
 // your application's authentication. The function takes a object as an argument
 // which configures how NextAuth behaves and what features it enables.
-export default NextAuth({
+export const authOptions = {
   // Here we are passing the `PrismaClient` instance to the PrismaAdapter.
   // This tells NextAuth to use Prisma as its database ORM.
   adapter: PrismaAdapter(prisma),
@@ -107,4 +107,6 @@ export default NextAuth({
     created user, while the signIn event handler receives the user, account, and
     profile related to the sign-in event. */
   },
-});
+};
+
+export default NextAuth(authOptions);
