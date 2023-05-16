@@ -20,9 +20,9 @@ import Image from 'next/image';
 // are available on the `user` object.
 export default function Navbar({ user }: Session) {
   return (
-    <nav className="flex items-center justify-between py-8 border">
+    <nav className="flex items-center justify-between py-8">
       <h1>Company Name</h1>
-      <ul>
+      <ul className="flex items-center gap-12">
         {!user && (
           <li className="px-4 py-2 text-white bg-teal-600 rounded-md">
             <button onClick={() => signIn()}>Sign in</button>

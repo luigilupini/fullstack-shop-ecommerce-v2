@@ -1,5 +1,5 @@
 // This library allows you to easily add authentication to your Next.js app.
-import NextAuth from 'next-auth';
+import NextAuth, { NextAuthOptions } from 'next-auth';
 // This is a prebuilt provider for Google OAuth authentication, making it easy
 // to integrate Google Sign-In into your app.
 import GoogleProvider from 'next-auth/providers/google';
@@ -17,14 +17,14 @@ import { PrismaClient } from '@prisma/client';
 // Creating a new instance of PrismaClient, which we interact with the database.
 const prisma = new PrismaClient();
 
-// STRIPE: USING EVENT HANDLERS WITH STRIPE API ⭐️
+// STRIPE: USING EVENT HANDLERS WITH STRIPE API (STEP 1) ⭐️
 import Stripe from 'stripe';
 
 // NEXTAUTH: PROVIDERS (STEP 2) ⭐️
 // This is the main export from this file. A `NextAuth` function that configures
 // your application's authentication. The function takes a object as an argument
 // which configures how NextAuth behaves and what features it enables.
-export const authOptions = {
+export const authOptions: NextAuthOptions = {
   // Here we are passing the `PrismaClient` instance to the PrismaAdapter.
   // This tells NextAuth to use Prisma as its database ORM.
   adapter: PrismaAdapter(prisma),
@@ -46,7 +46,7 @@ export const authOptions = {
     // You can add more providers here by following the same pattern...
     // Just import the provider from 'next-auth/providers/{provider-name}', and add it to this array.
   ],
-  // STRIPE: USING EVENT HANDLERS WITH STRIPE API ⭐️
+  // STRIPE: USING EVENT HANDLERS WITH STRIPE API (STEP 2) ⭐️
   // A events property in NextAuth.js is an object that allows you to subscribe
   // to a series of events that occur in a NextAuth.js lifecycle. These "events"
   // could be related to user creation, sign-in, sign-out, session changes, or
