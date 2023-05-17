@@ -14,6 +14,7 @@ import { Session } from 'next-auth';
 import { signIn, signOut } from 'next-auth/react';
 
 import Image from 'next/image';
+import Link from 'next/link';
 
 // Defining the Navbar component. This component takes a `user` prop, which is
 // typed with a Session. Session type ensures TypeScript knows what properties
@@ -21,10 +22,12 @@ import Image from 'next/image';
 export default function Navbar({ user }: Session) {
   return (
     <nav className="flex items-center justify-between py-8">
-      <h1>Company Name</h1>
+      <Link href={'/'}>
+        <h1>Company Name</h1>
+      </Link>
       <ul className="flex items-center gap-12">
         {!user && (
-          <li className="px-4 py-2 text-white bg-teal-600 rounded-md">
+          <li className="px-2 py-1 text-sm text-white bg-gray-800 rounded-md">
             <button onClick={() => signIn()}>Sign in</button>
           </li>
         )}
@@ -37,6 +40,7 @@ export default function Navbar({ user }: Session) {
                 width={48}
                 height={48}
                 className="rounded-full cursor-pointer"
+                priority
               />
             </li>
           </>

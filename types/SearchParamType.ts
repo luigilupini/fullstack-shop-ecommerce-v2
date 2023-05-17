@@ -1,3 +1,8 @@
+export type SearchParamTypes = {
+  params: Params;
+  searchParams: SearchParams;
+};
+
 type Params = {
   id: string;
 };
@@ -5,13 +10,8 @@ type Params = {
 type SearchParams = {
   name: string;
   unit_amount: number | null;
-  image: string;
+  images: string;
   id: string;
   description: string | null;
   features: string;
-};
-
-export type SearchParamTypes = {
-  params: Params;
-  searchParams: SearchParams;
 };

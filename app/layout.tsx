@@ -24,10 +24,10 @@ export default async function RootLayout({
   children: React.ReactNode;
 }) {
   const session = await getServerSession(authOptions);
-  console.log('RootLayout > getServerSession: ', session);
+  // console.log('RootLayout > getServerSession: ', session);
   return (
     <html lang="en">
-      <body className={`${karla.className} mx-64`}>
+      <body className={`${karla.className} mx-4 lg:mx-64`}>
         <Navbar user={session?.user} expires={session?.expires as string} />
         {children}
       </body>

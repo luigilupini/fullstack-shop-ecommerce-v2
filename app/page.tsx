@@ -16,7 +16,7 @@ const getProducts = async () => {
       return {
         // ...product,
         // prices: prices.data,
-        // Alternatively we can structure the return object to only include:
+        // 👇🏻 Alternatively we can structure the return object to only include:
         id: product.id,
         name: product.name,
         unit_amount: prices.data[0].unit_amount,
@@ -30,9 +30,9 @@ const getProducts = async () => {
   return productsWithPrices;
 };
 
-export default async function Home() {
+export default async function HomePage() {
   const products = await getProducts();
-  console.log('products: ', products);
+  // console.log('products: ', products);
   return (
     <main className="grid gap-8 grid-cols-fluid">
       {products.map((product) => (
