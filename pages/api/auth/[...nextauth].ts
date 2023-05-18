@@ -1,5 +1,7 @@
 // This library allows you to easily add authentication to your Next.js app.
-import NextAuth, { NextAuthOptions } from 'next-auth';
+// https://next-auth.js.org/configuration/nextjs#getServerSession
+import NextAuth from 'next-auth';
+import type { NextAuthOptions } from 'next-auth';
 // This is a prebuilt provider for Google OAuth authentication, making it easy
 // to integrate Google Sign-In into your app.
 import GoogleProvider from 'next-auth/providers/google';
@@ -28,6 +30,8 @@ export const authOptions: NextAuthOptions = {
   // Here we are passing the `PrismaClient` instance to the PrismaAdapter.
   // This tells NextAuth to use Prisma as its database ORM.
   adapter: PrismaAdapter(prisma),
+  // https://next-auth.js.org/configuration/options#nextauth_secret
+  secret: process.env.NEXTAUTH_SECRET,
   // The 'providers' property is an array of all the authentication providers
   // you want to use in your app. These are not necessarily all available providers,
   // but the ones you choose to integrate.
