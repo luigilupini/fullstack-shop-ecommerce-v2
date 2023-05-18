@@ -6,6 +6,8 @@ import Image from 'next/image';
 
 import { TbSquareRoundedPlus, TbSquareRoundedMinus } from 'react-icons/tb';
 
+import emptyBasket from '@/public/shopping-cart-empty.png';
+
 export default function Cart() {
   const cartStore = useCartStore();
   return (
@@ -13,11 +15,12 @@ export default function Cart() {
       onClick={() => cartStore.toggleCart()}
       className="fixed top-0 bottom-0 left-0 right-0 w-full h-screen bg-black/25 backdrop-blur-sm"
     >
-      <section
+      <div
         onClick={(e) => e.stopPropagation()}
         className="absolute top-0 right-0 w-1/4 h-screen p-12 overflow-y-scroll text-gray-700 bg-white"
       >
-        <h1 className="mb-6 text-2xl font-bold">Your shopping cart!</h1>
+        <h1 className="mb-6 text-2xl font-bold">Your shopping cart</h1>
+
         {cartStore.cart.map((item) => (
           <div className="flex gap-2 py-4" key={item.id}>
             <Image
@@ -50,7 +53,20 @@ export default function Cart() {
             Checkout
           </button>
         )}
-      </section>
+        {!cartStore.cart.length && (
+          <div className="flex flex-col items-center justify-center w-full h-full gap-2">
+            <Image
+              src={emptyBasket}
+              alt="Empty basket"
+              width={200}
+              height={200}
+              priority
+              className="object-cover"
+            />
+            <h2 className="text-lg font-semibold">Ohh no its empty :(</h2>
+          </div>
+        )}
+      </div>
     </div>
   );
 }
