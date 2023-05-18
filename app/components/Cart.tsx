@@ -19,7 +19,7 @@ export default function Cart() {
       >
         <h1 className="mb-6 text-2xl font-bold">Your shopping cart!</h1>
         {cartStore.cart.map((item) => (
-          <div className="flex gap-2 py-4">
+          <div className="flex gap-2 py-4" key={item.id}>
             <Image
               className="object-cover w-24 h-24 rounded-full shadow"
               src={item.images}
@@ -45,9 +45,11 @@ export default function Cart() {
             </div>
           </div>
         ))}
-        <button className="w-full px-4 py-2 mt-6 text-sm font-semibold text-white bg-black rounded hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2">
-          Checkout
-        </button>
+        {cartStore.cart.length > 0 && (
+          <button className="w-full px-4 py-2 mt-6 text-sm font-semibold text-white bg-black rounded hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2">
+            Checkout
+          </button>
+        )}
       </section>
     </div>
   );

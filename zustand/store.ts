@@ -70,63 +70,53 @@ const setupFunction = (set: SetState, get: GetState): CartStateType => ({
       return { ...state, isOpen: !state.isOpen };
     });
   },
+  // Adding is simpler to map through the cart items and increment the quantity
+  // if the item exists, or else we add the item at the end of the array.
   addProduct: (item: AddCartType) => {
     set((state) => {
-      const existingItem = state.cart.find(
-        (cartItem) => cartItem.id === item.id
-      );
-      // If the item exists in the cart, we want to update the quantity only of
-      // that item, not add it as a new item to cart again.
-      if (existingItem) {
-        const updatedCart = state.cart.map((cartItem) => {
-          if (cartItem.id === item.id) {
-            // We spread the existing `cartItem` to ensure we don't mutate it.
-            return { ...cartItem, quantity: cartItem.quantity! + 1 };
-          }
-          // If the item is not the one we are looking for, we return it as is.
-          return cartItem;
-        });
-        // We then return the updated cart array after spreading existing state!
-        return { ...state, cart: updatedCart };
-      } else {
-        // Otherwise, if an item is not in the cart already, add it to cart. We
-        // ensure we don't mutate state directly, instead we create a new array
-        // spreading existing state and we then spread the cart separately also.
+      const itemExists = state.cart.find((cartItem) => cartItem.id === item.id);
+      // If the item exists in the cart, we want to update the quantity.
+      if (itemExists) {
         return {
-          ...state,
-          cart: [...state.cart, { ...item, quantity: 1 }],
+          ...state, // 👈🏻 spread existing state
+          // If the item already exists in the cart, increment its quantity
+          cart: state.cart.map((cartItem) =>
+            cartItem.id === item.id
+              ? { ...cartItem, quantity: cartItem.quantity! + 1 }
+              : // Otherwise return the item as is (no change)
+                cartItem
+          ),
         };
       }
+      // If the item does not exist in the cart, add it with quantity 1
+      return {
+        ...state, // 👈🏻 spread existing state
+        cart: [...state.cart, { ...item, quantity: 1 }],
+      };
     });
   },
   removeProduct: (item: AddCartType) => {
     set((state) => {
-      // If the item exists in the cart, we want to update the quantity only of
-      // that item, not add it as a new item to cart again.
-      const existingItem = state.cart.find(
-        (cartItem) => cartItem.id === item.id
-      );
-      // If the item exists in the cart and its quantity is more than 1, we want
-      // to update and decrease the quantity and for only that item.
-      if (existingItem && existingItem.quantity! > 1) {
-        const updatedCart = state.cart.map((cartItem) => {
-          if (cartItem.id === item.id) {
-            // We spread the existing `cartItem` to ensure we don't mutate it.
-            return { ...cartItem, quantity: cartItem.quantity! - 1 };
-          }
-          // If the item is not the one we are looking for, we return it as is.
-          return cartItem;
-        });
-        // We then return the updated cart array after spreading existing state!
-        return { ...state, cart: updatedCart };
+      const itemExists = state.cart.find((cartItem) => cartItem.id === item.id);
+      // If the item exists in the cart and its quantity is greater than 1, we
+      // want to decrement the quantity.
+      if (itemExists && itemExists.quantity! > 1) {
+        return {
+          ...state, // 👈🏻 spread existing state
+          cart: state.cart.map(
+            (cartItem) =>
+              cartItem.id === item.id
+                ? { ...cartItem, quantity: cartItem.quantity! - 1 }
+                : cartItem // All other items are added and remain unchanged :)
+          ),
+        };
       } else {
-        // Otherwise, we filter the cart array to remove the item from the cart.
-        // Ensure we don't mutate state directly, instead we create a new array
-        // spreading existing state and we then spread the cart separately also.
-        const filterCart = state.cart.filter(
-          (cartItem) => cartItem.id !== item.id
-        );
-        return { ...state, cart: filterCart };
+        // Otherwise, else if the item exists in the cart and its quantity is 1
+        // or less, we want to remove the item from the cart.
+        return {
+          ...state, // 👈🏻 spread existing state
+          cart: state.cart.filter((cartItem) => cartItem.id !== item.id),
+        };
       }
     });
   },
