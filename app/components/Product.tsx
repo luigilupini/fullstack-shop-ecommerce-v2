@@ -11,6 +11,7 @@ export default function Product({
   name,
   images,
   unit_amount,
+  description,
   metadata: { features },
 }: ProductType) {
   // console.log({ id, name, images, unit_amount, features });
@@ -18,7 +19,7 @@ export default function Product({
     <Link
       href={{
         pathname: `/product/${id}`,
-        query: { id, name, images, unit_amount, features },
+        query: { id, name, images, unit_amount, description, features },
       }}
       className="overflow-hidden border rounded-lg shadow-sm"
     >

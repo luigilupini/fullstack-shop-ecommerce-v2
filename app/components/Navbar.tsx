@@ -27,7 +27,7 @@ import { useCartStore } from '@/zustand/store';
 export default function Navbar({ user }: Session) {
   // ZUSTAND: CONSUMING THE STORE ⭐️
   const cartStore = useCartStore();
-  console.log(cartStore);
+  // console.log(cartStore);
   return (
     <nav className="flex items-center justify-between py-12">
       <Link href={'/'}>

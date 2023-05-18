@@ -2,6 +2,8 @@ import { SearchParamTypes } from '@/types/SearchParamType';
 import priceFormat from '@/utils/priceFormat';
 import Image from 'next/image';
 
+import AddCartBtn from '../../components/addCartBtn';
+
 export default async function ProductPage({ searchParams }: SearchParamTypes) {
   // console.log('searchParams: ', searchParams);
   return (
@@ -24,9 +26,7 @@ export default async function ProductPage({ searchParams }: SearchParamTypes) {
             {searchParams.unit_amount && priceFormat(searchParams.unit_amount)}
           </p>
         </div>
-        <button className="px-6 py-2 my-12 font-medium text-white duration-300 bg-gray-800 rounded-md hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 ">
-          Add to cart
-        </button>
+        <AddCartBtn {...searchParams} />
       </div>
     </div>
   );
