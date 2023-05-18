@@ -12,6 +12,7 @@ import { persist } from 'zustand/middleware';
 type CartActions = {
   toggleCart: () => void;
   addProduct: (item: AddCartType) => void;
+  removeProduct: (item: AddCartType) => void;
 };
 
 type CartStateType = {
@@ -21,7 +22,8 @@ type CartStateType = {
 
 /* ZUSTAND: HOW TO USE OUR SETUP FUNCTION AND TYPES
 We have created `SetState` and `GetState` types for the `set` & `get` functions.
-We have modified the setupFunction to take `set: SetState` & `get: GetState` as parameters, so TypeScript now knows what type they are.
+We have modified the setupFunction to take `set: SetState` & `get: GetState` as
+parameters, so TypeScript now knows what type they are.
 
 FIRST SET ARGUMENT
 - set: (fn: (state: CartStateType) => CartStateType) => void
@@ -94,6 +96,37 @@ const setupFunction = (set: SetState, get: GetState): CartStateType => ({
           ...state,
           cart: [...state.cart, { ...item, quantity: 1 }],
         };
+      }
+    });
+  },
+  removeProduct: (item: AddCartType) => {
+    set((state) => {
+      // If the item exists in the cart, we want to update the quantity only of
+      // that item, not add it as a new item to cart again.
+      const existingItem = state.cart.find(
+        (cartItem) => cartItem.id === item.id
+      );
+      // If the item exists in the cart and its quantity is more than 1, we want
+      // to update and decrease the quantity and for only that item.
+      if (existingItem && existingItem.quantity! > 1) {
+        const updatedCart = state.cart.map((cartItem) => {
+          if (cartItem.id === item.id) {
+            // We spread the existing `cartItem` to ensure we don't mutate it.
+            return { ...cartItem, quantity: cartItem.quantity! - 1 };
+          }
+          // If the item is not the one we are looking for, we return it as is.
+          return cartItem;
+        });
+        // We then return the updated cart array after spreading existing state!
+        return { ...state, cart: updatedCart };
+      } else {
+        // Otherwise, we filter the cart array to remove the item from the cart.
+        // Ensure we don't mutate state directly, instead we create a new array
+        // spreading existing state and we then spread the cart separately also.
+        const filterCart = state.cart.filter(
+          (cartItem) => cartItem.id !== item.id
+        );
+        return { ...state, cart: filterCart };
       }
     });
   },

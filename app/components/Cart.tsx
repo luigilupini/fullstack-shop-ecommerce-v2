@@ -4,6 +4,8 @@ import priceFormat from '@/utils/priceFormat';
 import { useCartStore } from '@/zustand/store';
 import Image from 'next/image';
 
+import { TbSquareRoundedPlus, TbSquareRoundedMinus } from 'react-icons/tb';
+
 export default function Cart() {
   const cartStore = useCartStore();
   return (
@@ -28,7 +30,15 @@ export default function Cart() {
             />
             <div className="flex flex-col">
               <h2 className="text-sm font-semibold">{item.name}</h2>
-              <h2 className="text-sm">Qty: {item.quantity}</h2>
+              <div className="flex items-center gap-2">
+                <h2 className="text-sm">Qty: {item.quantity}</h2>
+                <button onClick={() => cartStore.removeProduct(item)}>
+                  <TbSquareRoundedMinus className="w-3 h-3 transition duration-300 ease-in cursor-pointer hover:drop-shadow-md hover:text-red-500 hover:scale-110" />
+                </button>
+                <button onClick={() => cartStore.addProduct(item)}>
+                  <TbSquareRoundedPlus className="w-3 h-3 transition duration-300 ease-in cursor-pointer hover:drop-shadow-md hover:text-green-500 hover:scale-110" />
+                </button>
+              </div>
               <h2 className="mt-auto text-sm">
                 {item.unit_amount && priceFormat(item.unit_amount)}
               </h2>
