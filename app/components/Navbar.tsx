@@ -16,7 +16,7 @@ import { signIn, signOut } from 'next-auth/react';
 import Image from 'next/image';
 import Link from 'next/link';
 
-import { FiShoppingCart } from 'react-icons/fi';
+import shoppingCart from '@/public/shopping-cart.png';
 
 import Cart from './Cart';
 import { useCartStore } from '@/zustand/store';
@@ -55,12 +55,19 @@ export default function Navbar({ user }: Session) {
       <Link href={'/'}>
         <h1>Company Name</h1>
       </Link>
-      <ul className="flex items-center gap-6">
+      <ul className="flex items-center justify-center gap-6">
         <li
-          className="relative text-[26px] text-gray-800 cursor-pointer pt-2"
+          className="relative text-[26px] text-gray-800 cursor-pointer"
           onClick={() => cartStore.toggleCart()}
         >
-          <FiShoppingCart />
+          <Image
+            src={shoppingCart}
+            height={38}
+            width={38}
+            alt="Shopping Cart"
+            className="object-cover cursor-pointer"
+            priority
+          />
 
           <AnimatePresence>
             {/* Required condition when a component is removed from React tree */}
@@ -69,7 +76,7 @@ export default function Navbar({ user }: Session) {
                 animate={{ scale: 1 }}
                 initial={{ scale: 0 }}
                 exit={{ scale: 0 }}
-                className="absolute flex items-center justify-center w-5 h-5 text-xs font-bold text-white border border-orange-500 rounded-full shadow-lg left-3 bottom-3 bg-orange-500/95"
+                className="absolute flex items-center justify-center w-5 h-5 text-xs font-bold text-white bg-orange-500 border border-orange-500 rounded-full shadow-lg left-5 bottom-4"
               >
                 {cartStore.cart.length}
               </motion.span>
@@ -87,9 +94,9 @@ export default function Navbar({ user }: Session) {
             <Image
               src={user?.image as string}
               alt={user?.name as string}
-              width={36}
-              height={36}
-              className="rounded-full cursor-pointer"
+              width={38}
+              height={38}
+              className="object-cover rounded-full cursor-pointer"
               priority
             />
           </li>

@@ -7,6 +7,22 @@ import Image from 'next/image';
 import { TbSquareRoundedPlus, TbSquareRoundedMinus } from 'react-icons/tb';
 
 import emptyBasket from '@/public/shopping-cart-empty.png';
+
+// FRAMER: USING THE LAYOUT PROP ⭐️
+// Setting `layout` prop to `true` enables an element to automatically animate to
+// its new position when its layout changes. The animation is efficient and uses
+// the CSS `transform` property. However, it can cause visual distortions on the
+// children elements and certain CSS properties like boxShadow and borderRadius.
+
+// To fix the distortions, add the `layout` prop to those child elements as well.
+// If boxShadow and borderRadius are already being animated on the parent, they
+// will auto-correct. Otherwise, set them directly via the initial prop.
+
+// Setting `layout` to "position", the component will animate its position while
+// the size changes instantly. Setting a "size" will make the size animate while
+// position changes instantly. A `layout` set to "preserve-aspect" components is
+// going to animate both size and position if the aspect ratio remains constant,
+// and only position if the ratio changes.
 import { motion } from 'framer-motion';
 
 export default function Cart() {
@@ -24,14 +40,17 @@ export default function Cart() {
       onClick={() => cartStore.toggleCart()}
       className="fixed top-0 bottom-0 left-0 right-0 w-full h-screen bg-black/25 backdrop-blur-sm"
     >
-      <div
+      {/* Shopping Cart */}
+      <motion.section
+        layout
         onClick={(e) => e.stopPropagation()}
         className="absolute top-0 right-0 w-1/4 h-screen p-12 overflow-y-scroll text-gray-700 bg-white"
       >
         <h1 className="mb-6 text-2xl font-bold">Your shopping cart</h1>
 
         {cartStore.cart.map((item) => (
-          <div className="flex gap-2 py-4" key={item.id}>
+          /* Each Item */
+          <motion.article key={item.id} layout className="flex gap-2 py-4">
             <Image
               className="object-cover w-24 h-24 rounded-full shadow"
               src={item.images}
@@ -40,38 +59,43 @@ export default function Cart() {
               height={120}
               priority
             />
-            <div className="flex flex-col">
+            <motion.div className="flex flex-col">
               <h2 className="text-sm font-semibold">{item.name}</h2>
               <div className="flex items-center gap-2">
                 <h2 className="text-sm">Qty: {item.quantity}</h2>
                 <button onClick={() => cartStore.removeProduct(item)}>
-                  <TbSquareRoundedMinus className="w-3 h-3 transition duration-300 ease-in cursor-pointer hover:drop-shadow-md hover:text-red-500 hover:scale-110" />
+                  <TbSquareRoundedMinus className="w-3 h-3 transition duration-300 ease-in cursor-pointer hover:drop-shadow-md hover:text-red-500 hover:scale-125" />
                 </button>
                 <button onClick={() => cartStore.addProduct(item)}>
-                  <TbSquareRoundedPlus className="w-3 h-3 transition duration-300 ease-in cursor-pointer hover:drop-shadow-md hover:text-green-500 hover:scale-110" />
+                  <TbSquareRoundedPlus className="w-3 h-3 transition duration-300 ease-in cursor-pointer hover:drop-shadow-md hover:text-green-500 hover:scale-125" />
                 </button>
               </div>
               <h2 className="mt-auto text-sm">
                 {item.unit_amount && priceFormat(item.unit_amount)}
               </h2>
-            </div>
-          </div>
+            </motion.div>
+          </motion.article>
         ))}
-        <p className="mt-6">
-          <span className="font-semibold">Total:</span>{' '}
-          {priceFormat(totalPrice)}
-        </p>
+
+        {/* Total & Checkout */}
         {cartStore.cart.length > 0 && (
-          <button className="w-full px-4 py-2 mt-2 text-sm font-semibold text-white bg-black rounded hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2">
-            Checkout
-          </button>
+          <motion.div layout>
+            <p className="mt-6">
+              <span className="font-semibold">Total:</span>{' '}
+              {priceFormat(totalPrice)}
+            </p>
+            <button className="w-full px-4 py-2 mt-2 text-sm font-semibold text-white bg-black rounded hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2">
+              Checkout
+            </button>
+          </motion.div>
         )}
 
+        {/* If empty cart */}
         {!cartStore.cart.length && (
           <motion.div
             initial={{ scale: 0.5, rotateZ: -10, opacity: 0 }}
             animate={{ scale: 1, rotateZ: 0, opacity: 0.75 }}
-            className="flex flex-col items-center justify-center w-full h-full gap-2"
+            className="flex flex-col items-center justify-center w-full h-[90%] gap-2"
           >
             <Image
               src={emptyBasket}
@@ -84,7 +108,7 @@ export default function Cart() {
             <h2 className="text-lg font-semibold">Ohh no its empty :(</h2>
           </motion.div>
         )}
-      </div>
+      </motion.section>
     </motion.div>
   );
 }
