@@ -7,6 +7,7 @@ import Image from 'next/image';
 import { TbSquareRoundedPlus, TbSquareRoundedMinus } from 'react-icons/tb';
 
 import emptyBasket from '@/public/shopping-cart-empty.png';
+import { motion } from 'framer-motion';
 
 export default function Cart() {
   const cartStore = useCartStore();
@@ -16,7 +17,10 @@ export default function Cart() {
   }, 0);
 
   return (
-    <div
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
       onClick={() => cartStore.toggleCart()}
       className="fixed top-0 bottom-0 left-0 right-0 w-full h-screen bg-black/25 backdrop-blur-sm"
     >
@@ -62,8 +66,13 @@ export default function Cart() {
             Checkout
           </button>
         )}
+
         {!cartStore.cart.length && (
-          <div className="flex flex-col items-center justify-center w-full h-full gap-2">
+          <motion.div
+            initial={{ scale: 0.5, rotateZ: -10, opacity: 0 }}
+            animate={{ scale: 1, rotateZ: 0, opacity: 0.75 }}
+            className="flex flex-col items-center justify-center w-full h-full gap-2"
+          >
             <Image
               src={emptyBasket}
               alt="Empty basket"
@@ -73,9 +82,9 @@ export default function Cart() {
               className="object-cover"
             />
             <h2 className="text-lg font-semibold">Ohh no its empty :(</h2>
-          </div>
+          </motion.div>
         )}
       </div>
-    </div>
+    </motion.div>
   );
 }
