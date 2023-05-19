@@ -13,11 +13,15 @@ type CartActions = {
   toggleCart: () => void;
   addProduct: (item: AddCartType) => void;
   removeProduct: (item: AddCartType) => void;
+  setPaymentIntent: (value: string) => void;
+  setCheckout: (value: string) => void;
 };
 
 type CartStateType = {
   isOpen: boolean;
   cart: AddCartType[];
+  paymentIntent: string;
+  onCheckout: string;
 } & CartActions;
 
 /* ZUSTAND: HOW TO USE OUR SETUP FUNCTION AND TYPES
@@ -65,6 +69,8 @@ const options = { name: 'cart-store' };
 const setupFunction = (set: SetState, get: GetState): CartStateType => ({
   cart: [],
   isOpen: false,
+  paymentIntent: '',
+  onCheckout: 'cart',
   toggleCart: () => {
     set((state) => {
       return { ...state, isOpen: !state.isOpen };
@@ -72,7 +78,7 @@ const setupFunction = (set: SetState, get: GetState): CartStateType => ({
   },
   // Adding is simpler to map through the cart items and increment the quantity
   // if the item exists, or else we add the item at the end of the array.
-  addProduct: (item: AddCartType) => {
+  addProduct: (item) => {
     set((state) => {
       const itemExists = state.cart.find((cartItem) => cartItem.id === item.id);
       // If the item exists in the cart, we want to update the quantity.
@@ -95,7 +101,7 @@ const setupFunction = (set: SetState, get: GetState): CartStateType => ({
       };
     });
   },
-  removeProduct: (item: AddCartType) => {
+  removeProduct: (item) => {
     set((state) => {
       const itemExists = state.cart.find((cartItem) => cartItem.id === item.id);
       // If the item exists in the cart and its quantity is greater than 1, we
@@ -118,6 +124,22 @@ const setupFunction = (set: SetState, get: GetState): CartStateType => ({
           cart: state.cart.filter((cartItem) => cartItem.id !== item.id),
         };
       }
+    });
+  },
+  setPaymentIntent: (value) => {
+    set((state) => {
+      return {
+        ...state, // 👈🏻 spread existing state
+        value,
+      };
+    });
+  },
+  setCheckout: (value) => {
+    set((state) => {
+      return {
+        ...state, // 👈🏻 spread existing state
+        value,
+      };
     });
   },
 });
