@@ -4,6 +4,7 @@ import priceFormat from '@/utils/priceFormat';
 import { useCartStore } from '@/zustand/store';
 import Image from 'next/image';
 
+import { CgClose } from 'react-icons/cg';
 import { TbSquareRoundedPlus, TbSquareRoundedMinus } from 'react-icons/tb';
 
 import emptyBasket from '@/public/shopping-cart-empty.png';
@@ -44,9 +45,15 @@ export default function Cart() {
       <motion.section
         layout
         onClick={(e) => e.stopPropagation()}
-        className="absolute top-0 right-0 w-1/4 h-screen p-12 overflow-y-scroll text-gray-700 bg-white"
+        className="absolute top-0 right-0 w-8/12 h-screen p-12 overflow-y-scroll text-gray-700 bg-white lg:w-2/5"
       >
-        <h1 className="mb-6 text-2xl font-bold">Your shopping cart</h1>
+        <div className="flex items-center justify-between mb-12">
+          <h1 className="text-2xl font-bold">Your shopping cart</h1>
+          <CgClose
+            className="w-6 h-6 cursor-pointer"
+            onClick={() => cartStore.toggleCart()}
+          />
+        </div>
 
         {cartStore.cart.map((item) => (
           /* Each Item */
@@ -64,10 +71,10 @@ export default function Cart() {
               <div className="flex items-center gap-2">
                 <h2 className="text-sm">Qty: {item.quantity}</h2>
                 <button onClick={() => cartStore.removeProduct(item)}>
-                  <TbSquareRoundedMinus className="w-3 h-3 transition duration-300 ease-in cursor-pointer hover:drop-shadow-md hover:text-red-500 hover:scale-125" />
+                  <TbSquareRoundedMinus className="w-3 h-3 transition duration-100 ease-in-out cursor-pointer hover:drop-shadow-md hover:text-red-500 hover:scale-125" />
                 </button>
                 <button onClick={() => cartStore.addProduct(item)}>
-                  <TbSquareRoundedPlus className="w-3 h-3 transition duration-300 ease-in cursor-pointer hover:drop-shadow-md hover:text-green-500 hover:scale-125" />
+                  <TbSquareRoundedPlus className="w-3 h-3 transition duration-100 ease-in-out cursor-pointer hover:drop-shadow-md hover:text-green-500 hover:scale-125" />
                 </button>
               </div>
               <h2 className="mt-auto text-sm">
@@ -80,7 +87,7 @@ export default function Cart() {
         {/* Total & Checkout */}
         {cartStore.cart.length > 0 && (
           <motion.div layout>
-            <p className="mt-6">
+            <p className="py-2 mt-6">
               <span className="font-semibold">Total:</span>{' '}
               {priceFormat(totalPrice)}
             </p>

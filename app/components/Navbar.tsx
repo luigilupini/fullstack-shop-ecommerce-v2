@@ -53,7 +53,7 @@ export default function Navbar({ user }: Session) {
   return (
     <nav className="flex items-center justify-between py-12">
       <Link href={'/'}>
-        <h1>Company Name</h1>
+        <h1>Superdry Clone</h1>
       </Link>
       <ul className="flex items-center justify-center gap-6">
         <li
@@ -62,8 +62,8 @@ export default function Navbar({ user }: Session) {
         >
           <Image
             src={shoppingCart}
-            height={38}
-            width={38}
+            height={36}
+            width={36}
             alt="Shopping Cart"
             className="object-cover cursor-pointer"
             priority

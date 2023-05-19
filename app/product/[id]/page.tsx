@@ -7,27 +7,27 @@ import AddCartBtn from '../../components/addCartBtn';
 export default async function ProductPage({ searchParams }: SearchParamTypes) {
   // console.log('searchParams: ', searchParams);
   return (
-    <div className="flex items-center justify-between gap-16 mt-12">
+    <div className="flex flex-col items-center justify-between gap-16 mt-12 md:flex-row">
       <Image
         src={searchParams.images}
         alt={searchParams.name}
         width={600}
         height={600}
-        className="object-cover w-full rounded-sm h-96"
+        className="object-cover w-full h-56 rounded-sm md:h-96"
         priority={true}
       />
 
-      <div className="text-gray-700">
-        <h1 className="py-2 text-2xl font-medium">{searchParams.name}</h1>
-        <p className="py-2">{searchParams.description}</p>
-        <p className="py-2">{searchParams.features}</p>
-        <div className="flex gap-2">
-          <p className="font-bold">
+      <article className="flex flex-col h-full gap-4 text-gray-700">
+        <div>
+          <h1 className="py-2 text-2xl font-medium">{searchParams.name}</h1>
+          {/* <p className="py-2">{searchParams.description}</p> */}
+          <p className="py-2">{searchParams.features}</p>
+          <p className="py-2 font-bold">
             {searchParams.unit_amount && priceFormat(searchParams.unit_amount)}
           </p>
         </div>
         <AddCartBtn {...searchParams} />
-      </div>
+      </article>
     </div>
   );
 }
