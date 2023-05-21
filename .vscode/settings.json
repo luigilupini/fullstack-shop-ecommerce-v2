@@ -1,5 +1,5 @@
 {
   "typescript.tsdk": "node_modules/typescript/lib",
   "typescript.enablePromptUseWorkspaceTsdk": true,
-  "cSpell.words": ["Zustand"]
+  "cSpell.words": ["NEXTAUTH", "signin", "Zustand"]
 }

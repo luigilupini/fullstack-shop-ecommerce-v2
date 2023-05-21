@@ -37,18 +37,18 @@ export const authOptions: NextAuthOptions = {
   // but the ones you choose to integrate.
   providers: [
     // https://next-auth.js.org/providers/google
-    // Here, we're adding Google as an authentication provider.
-    // We're passing an object to GoogleProvider that includes our Google client ID and secret.
+    // Here, we're adding Google as an authentication provider. We're passing an
+    // object to `GoogleProvider` that includes our Google client ID and secret.
     // These are typically stored as environment variables for security reasons.
-    // The 'as string' part is a TypeScript type assertion, ensuring that the values are strings.
-    // Next.js packages like NextAuth.js can only access environment variables from `.env.local` files.
-    // However, Prisma, being a Node.js application, only has visibility of the `.env` files.
+    // A 'as string' part is a type assertion, ensuring that values are strings.
+    // Next packages "NextAuth" only access `.env.local` environment variables.
+    // However Node.js apps like "Prisma" they only work with `.env` files.
     GoogleProvider({
       clientId: process.env.GOOGLE_CLIENT_ID as string,
       clientSecret: process.env.GOOGLE_CLIENT_SECRET as string,
     }),
-    // You can add more providers here by following the same pattern...
-    // Just import the provider from 'next-auth/providers/{provider-name}', and add it to this array.
+    // You can add more providers here by following this pattern. Just import a
+    // provider from 'next-auth/providers/{provider-name}' and add it here!
   ],
   // STRIPE: USING EVENT HANDLERS WITH STRIPE API (STEP 2) ⭐️
   // A events property in NextAuth.js is an object that allows you to subscribe
@@ -58,41 +58,42 @@ export const authOptions: NextAuthOptions = {
   // custom code to execute when these events occur. Below, your are subscribing
   // to `createUser` event, which is fired whenever a new user is created:
   events: {
-    // A 'createUser' event fired whenever a new user is created in your NextAuth app.
-    // It gets an object with the 'user' key, which contains info about the newly created user.
+    // A 'createUser' event fired whenever a new user created in ur NextAuth app.
+    // An object with 'user' key contains info about the newly created user.
     createUser: async ({ user }) => {
-      console.log('NextAuth > createUser: ', { user });
-      // Creating a new instance of the Stripe object with your secret key.
-      // Stripe is a payment processing service, and this object allows you to interact with their API.
-      // The 'as string' part is a TypeScript type assertion, ensuring that the value is a string.
-      // With the stripe instance, you can make various requests to a Stripe API endpoint.
-      // Here we create a new customer `stripe.customers.create({...})`
-      // This creates a new customer in your Stripe account, for keeping track of their payment data.
-      // Remember to handle sensitive data such as Stripe keys with care.
-      // Here we do not expose it in the client-side code or in version control systems.
-      // Instead, use environment variables or other secure means to handle them.
+      // console.log('createUser: ', { user });
+      // Creating a new instance of the Stripe object with your secret key. Its
+      // a payment processing service and this object allows you to interact with
+      // their API. A 'as string' part is a TS type assertion ensuring that the
+      // value is a string. A `stripe` instance can make various requests toward
+      // a Stripe API endpoint. Here `stripe.customers.create({...})` creates a
+      // new customer in your Stripe account, for keeping track of their payment
+      // data. Remember to handle sensitive data such as Stripe, keep your keys
+      // secret. Here we do not expose it in client-side code or version control
+      // systems. Instead, environment variables handle them.
       const stripe = new Stripe(process.env.STRIPE_SECRET_KEY as string, {
         // Setting the Stripe API version to be used.
         apiVersion: '2022-11-15',
       });
-      // If the user has an email and a name, then a new customer is created in Stripe.
-      // This customer corresponds to the newly created user in your application.
+      // If a user has an email and a name, a new customer is created in Stripe.
+      // This customer corresponds to the newly created user in your app.
       if (user.email && user.name) {
         const customer = await stripe.customers.create({
           email: user.email,
           name: user.name,
         });
-        // Update update Prisma with the `stripeCustomerId`:
-        // The user's corresponding record in the Prisma database is then updated
-        // With the ID of the newly created Stripe customer.
-        // This allows for easy linking of your users to their Stripe customer info, when handling payments.
+        // STRIPE: UPDATE USER RECORD IN PRISMA ⭐️
+        // Update Prisma with the `stripeCustomerId`. The user's corresponding
+        // record in the Prisma database is then updated with the ID of a newly
+        // created Stripe customer. This allows for easy linking of your users
+        // to their Stripe customer info, when handling payments.
         await prisma.user.update({
           where: { id: user.id },
           data: { stripeCustomerId: customer.id },
         });
       }
     },
-    /* LIST OF EVENT HANDLERS:
+    /* LIST OF OTHER NEXTAUTH EVENT HANDLERS:
     In the `createUser` event handler, you're receiving the newly created user
     object and executing logic which involves interacting with Stripe & updating
     your Prisma database. Here's a list of other events you can subscribe to:
@@ -110,6 +111,23 @@ export const authOptions: NextAuthOptions = {
     example, the createUser event handler receives an object containing the newly
     created user, while the signIn event handler receives the user, account, and
     profile related to the sign-in event. */
+  },
+  // STRIPE: UPDATE SESSION CALLBACK ⭐️
+  // A `callbacks` property in NextAuth is a object that allows you to hook into
+  // various events in the NextAuth.js lifecycle. These `callbacks` are invoked
+  // when certain events occur. Here we are subscribing to a `session` callback.
+  // This callback invoked whenever NextAuth.js needs current session data. For
+  // instance, during sign in or when `getSession` & `useSession` are called in
+  // your Next application, example Checkout component calls our create payment
+  // intent api route the returns this session info. By providing this callback,
+  // we modify the session object that's usually returned by NextAuth. Here, we
+  // adding info with req and res data from our Checkout using that route.
+  callbacks: {
+    // Needed info is passed in from `pages/api/create-payment-intent.ts` route.
+    async session({ session, token, user }) {
+      session.user = user;
+      return session;
+    },
   },
 };
 

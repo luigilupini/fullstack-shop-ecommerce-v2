@@ -25,6 +25,7 @@ import emptyBasket from '@/public/shopping-cart-empty.png';
 // going to animate both size and position if the aspect ratio remains constant,
 // and only position if the ratio changes.
 import { motion } from 'framer-motion';
+import Checkout from './Checkout';
 
 export default function Cart() {
   const cartStore = useCartStore();
@@ -41,7 +42,7 @@ export default function Cart() {
       onClick={() => cartStore.toggleCart()}
       className="fixed top-0 bottom-0 left-0 right-0 w-full h-screen bg-black/25 backdrop-blur-sm"
     >
-      {/* Shopping Cart */}
+      {/* Shopping Panel */}
       <motion.section
         layout
         onClick={(e) => e.stopPropagation()}
@@ -55,49 +56,60 @@ export default function Cart() {
           />
         </div>
 
-        {cartStore.cart.map((item) => (
-          /* Each Item */
-          <motion.article key={item.id} layout className="flex gap-2 py-4">
-            <Image
-              className="object-cover w-24 h-24 rounded-full shadow"
-              src={item.images}
-              alt={item.name}
-              width={120}
-              height={120}
-              priority
-            />
-            <motion.div className="flex flex-col">
-              <h2 className="text-sm font-semibold">{item.name}</h2>
-              <div className="flex items-center gap-2">
-                <h2 className="text-sm">Qty: {item.quantity}</h2>
-                <button onClick={() => cartStore.removeProduct(item)}>
-                  <TbSquareRoundedMinus className="w-3 h-3 transition duration-100 ease-in-out cursor-pointer hover:drop-shadow-md hover:text-red-500 hover:scale-125" />
-                </button>
-                <button onClick={() => cartStore.addProduct(item)}>
-                  <TbSquareRoundedPlus className="w-3 h-3 transition duration-100 ease-in-out cursor-pointer hover:drop-shadow-md hover:text-green-500 hover:scale-125" />
-                </button>
-              </div>
-              <h2 className="mt-auto text-sm">
-                {item.unit_amount && priceFormat(item.unit_amount)}
-              </h2>
-            </motion.div>
-          </motion.article>
-        ))}
+        {/* Items in Cart */}
+        {cartStore.onCheckout === 'cart' && (
+          <>
+            {cartStore.cart.map((item) => (
+              /* Each Item */
+              <motion.article key={item.id} layout className="flex gap-2 py-4">
+                <Image
+                  className="object-cover w-24 h-24 rounded-full shadow"
+                  src={item.images}
+                  alt={item.name}
+                  width={120}
+                  height={120}
+                  priority
+                />
+                <motion.div className="flex flex-col">
+                  <h2 className="text-sm font-semibold">{item.name}</h2>
+                  <div className="flex items-center gap-2">
+                    <h2 className="text-sm">Qty: {item.quantity}</h2>
+                    <button onClick={() => cartStore.removeProduct(item)}>
+                      <TbSquareRoundedMinus className="w-3 h-3 transition duration-100 ease-in-out cursor-pointer hover:drop-shadow-md hover:text-red-500 hover:scale-125" />
+                    </button>
+                    <button onClick={() => cartStore.addProduct(item)}>
+                      <TbSquareRoundedPlus className="w-3 h-3 transition duration-100 ease-in-out cursor-pointer hover:drop-shadow-md hover:text-green-500 hover:scale-125" />
+                    </button>
+                  </div>
+                  <h2 className="mt-auto text-sm">
+                    {item.unit_amount && priceFormat(item.unit_amount)}
+                  </h2>
+                </motion.div>
+              </motion.article>
+            ))}
+          </>
+        )}
 
-        {/* Total & Checkout */}
+        {/* Total */}
         {cartStore.cart.length > 0 && (
           <motion.div layout>
             <p className="py-2 mt-6">
               <span className="font-semibold">Total:</span>{' '}
               {priceFormat(totalPrice)}
             </p>
-            <button className="w-full px-4 py-2 mt-2 text-sm font-semibold text-white bg-black rounded hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2">
+            <button
+              onClick={() => cartStore.setCheckout('checkout')}
+              className="w-full px-4 py-2 mt-2 text-sm font-semibold text-white bg-black rounded hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2"
+            >
               Checkout
             </button>
           </motion.div>
         )}
 
-        {/* If empty cart */}
+        {/* Checkout Form */}
+        {cartStore.onCheckout === 'checkout' && <Checkout />}
+
+        {/* Empty Cart Status */}
         {!cartStore.cart.length && (
           <motion.div
             initial={{ scale: 0.5, rotateZ: -10, opacity: 0 }}

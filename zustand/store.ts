@@ -67,10 +67,12 @@ const options = { name: 'cart-store' };
 // This is our state setup function that includes initial state & any actions.
 // It takes a `set` function as its argument, which can update the state.
 const setupFunction = (set: SetState, get: GetState): CartStateType => ({
+  // INITIAL STATE
   cart: [],
   isOpen: false,
   paymentIntent: '',
   onCheckout: 'cart',
+  // ACTIONS
   toggleCart: () => {
     set((state) => {
       return { ...state, isOpen: !state.isOpen };
@@ -128,18 +130,12 @@ const setupFunction = (set: SetState, get: GetState): CartStateType => ({
   },
   setPaymentIntent: (value) => {
     set((state) => {
-      return {
-        ...state, // 👈🏻 spread existing state
-        value,
-      };
+      return { ...state, paymentIntent: value };
     });
   },
   setCheckout: (value) => {
     set((state) => {
-      return {
-        ...state, // 👈🏻 spread existing state
-        value,
-      };
+      return { ...state, onCheckout: value };
     });
   },
 });

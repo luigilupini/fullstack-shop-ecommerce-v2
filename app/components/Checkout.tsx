@@ -22,6 +22,7 @@ import { Elements } from '@stripe/react-stripe-js';
 
 import { useCartStore } from '@/zustand/store';
 import { useEffect, useState } from 'react';
+import { useRouter } from 'next/navigation';
 
 // STRIPE: LOAD STRIPE PROMISE ⭐️
 // Since environment variables are server-side constructs, they are not readily
@@ -29,10 +30,8 @@ import { useEffect, useState } from 'react';
 // object in the Next config file to expose certain environment variables to the
 // client-side. Alternatively, you can also prefix the environment variable with
 // `NEXT_PUBLIC_` to make them available in the client browser.
-// 👇🏻 This might not work on the client side
-const promiseOops = loadStripe(process.env.STRIPE_PUBLISHABLE_KEY!);
-// 👇🏻 This would work on both server and client side
-const promise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!);
+// const promiseOops = loadStripe(process.env.STRIPE_PUBLISHABLE_KEY!); // ❌
+const promise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!); // ✅
 // This is a secure way to use variables that you need on the client side, but
 // remember to never expose sensitive secrets this way. Stripe publishable key
 // is safe to use in the browser, but your secret key should never be exposed.
@@ -40,8 +39,16 @@ const promise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!);
 export default function Checkout() {
   // ZUSTAND: CONSUMING THE STORE ⭐️
   const cartStore = useCartStore();
-  // 👇🏻 A customer will require a client secret to complete a payment.
+  // Every payment intent contain a `clientSecret`. The client secret is used by
+  // the Stripe SDK to confirm the payment intent. Basically a key unique to the
+  // individual/payment that Stripe use to track the state of the intent. On the
+  // client side on your application, Stipe uses the `clientSecret` as parameter
+  // to invoke specific actions or functions in Stripe. Like confirming payment,
+  // confirming order, updating order, etc... We use Zustand to manage the state
+  // of the cart and what payment intent stage we are in.
   const [clientSecret, setClientSecret] = useState('');
+
+  const router = useRouter();
 
   // STRIPE: CREATE OR UPDATE A PAYMENT INTENT FOR THE ORDER ⭐️
   // A payment intent is a object that represent your intent to collect payment.
@@ -58,10 +65,12 @@ export default function Checkout() {
   // transaction, rather than an order. But when building store, a user's order
   // includes multiple items, those usually covered by a single PaymentIntent.
   useEffect(() => {
+    // STRIPE: DEFINE AN API ROUTE ⭐️
+    // Here we passing our payment data to this API route.
     fetch('/api/create-payment-intent', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      // 👇🏻 We send cart items to the server to create or update a payment intent.
+      // 👇🏻 We send cart items to a route to create or update a payment intent.
       // We `stringify` cart items because a body of fetch requests must be only
       // be a string or `Blob` object. Zustand we `persist` all  store state to
       // localStorage, so that store state is preserved across page loads.
@@ -71,12 +80,29 @@ export default function Checkout() {
         // If not provided, a new intent will be created with these items.
         payment_intent_id: cartStore.paymentIntent,
       }),
-    });
+    })
+      .then((res) => {
+        // By using useRouter we can access the query object. If the user is not
+        // authenticated, navigate them to the api signin page.
+        if (res.status === 403) {
+          return router.push('/api/auth/signin');
+        }
+
+        // STRIPE: ASSOCIATE CLIENT SECRET WITH PAYMENT INTENT ⭐️
+        // Here we condition if the user's not authenticated to return them to our
+        // home route/page. Otherwise if logged in, we want to set the new payment
+        // intent to a response we get from a Stripe API route. Here we associate
+        // the client secret with the payment intent.
+        return res.json();
+      })
+      .then((data) => {
+        console.log(data);
+      });
   }, []);
 
   return (
     <div>
-      <p>Checkout</p>
+      <h1>Checkout</h1>
     </div>
   );
 }
