@@ -91,14 +91,16 @@ export default function Navbar({ user }: Session) {
         )}
         {user && (
           <li>
-            <Image
-              src={user?.image as string}
-              alt={user?.name as string}
-              width={38}
-              height={38}
-              className="object-cover rounded-full cursor-pointer"
-              priority
-            />
+            <Link href={'/dashboard'}>
+              <Image
+                src={user?.image as string}
+                alt={user?.name as string}
+                width={38}
+                height={38}
+                className="object-cover rounded-full cursor-pointer"
+                priority
+              />
+            </Link>
           </li>
         )}
       </ul>

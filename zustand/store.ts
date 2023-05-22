@@ -15,6 +15,7 @@ type CartActions = {
   removeProduct: (item: AddCartType) => void;
   setPaymentIntent: (value: string) => void;
   setCheckout: (value: string) => void;
+  clearCart: () => void;
 };
 
 type CartStateType = {
@@ -136,6 +137,11 @@ const setupFunction = (set: SetState, get: GetState): CartStateType => ({
   setCheckout: (value) => {
     set((state) => {
       return { ...state, onCheckout: value };
+    });
+  },
+  clearCart: () => {
+    set((state) => {
+      return { ...state, cart: [] };
     });
   },
 });
