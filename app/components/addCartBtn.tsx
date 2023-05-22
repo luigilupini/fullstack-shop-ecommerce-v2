@@ -8,7 +8,7 @@ import React from 'react';
 export default function addCartBtn({
   id,
   name,
-  images,
+  image,
   unit_amount,
   quantity,
 }: AddCartType) {
@@ -21,7 +21,7 @@ export default function addCartBtn({
           cartStore.addProduct({
             id,
             name,
-            images,
+            image,
             unit_amount,
             quantity,
           })

@@ -9,7 +9,7 @@ export default async function ProductPage({ searchParams }: SearchParamTypes) {
   return (
     <div className="flex flex-col items-center justify-between gap-16 mt-12 md:flex-row">
       <Image
-        src={searchParams.images}
+        src={searchParams.image}
         alt={searchParams.name}
         width={600}
         height={600}

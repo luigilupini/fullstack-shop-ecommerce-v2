@@ -1,5 +1,5 @@
 import './globals.css';
-import { Karla, Roboto, Lobster_Two } from 'next/font/google';
+import { Karla } from 'next/font/google';
 import Navbar from './components/Navbar';
 
 // NEXTAUTH: GETTING SESSION INFORMATION ⭐️

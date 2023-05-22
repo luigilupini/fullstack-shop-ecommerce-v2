@@ -10,7 +10,7 @@ type Params = {
 type SearchParams = {
   name: string;
   unit_amount: number | null;
-  images: string;
+  image: string;
   id: string;
   description: string | null;
   features: string;

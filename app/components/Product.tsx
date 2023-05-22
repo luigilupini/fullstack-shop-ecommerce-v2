@@ -9,23 +9,23 @@ import priceFormat from '@/utils/priceFormat';
 export default function Product({
   id,
   name,
-  images,
+  image,
   unit_amount,
   description,
   metadata: { features },
 }: ProductType) {
-  // console.log({ id, name, images, unit_amount, features });
+  // console.log({ id, name, image, unit_amount, features });
   return (
     <Link
       href={{
         pathname: `/product/${id}`,
-        query: { id, name, images, unit_amount, description, features },
+        query: { id, name, image, unit_amount, description, features },
       }}
       className="overflow-hidden border rounded-lg shadow-sm"
     >
       <div className="overflow-hidden">
         <Image
-          src={images}
+          src={image}
           alt={name}
           width={800}
           height={800}

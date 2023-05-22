@@ -49,7 +49,8 @@ export default async function handler(
   const orderData = {
     // A user property is using Prisma `connect` operation to link this `Order`
     // to a `User` record in the database. This assumes that you have a relation
-    // set up between the `User` and `Order` models in your Prisma schema.
+    // set up between the `User` and `Order` models in your Prisma schema. The
+    // `connect` operation is going to be given the current signed in user.
     user: { connect: { id: (userSession.user as any).id } },
     amount: calcOrderAmount(items),
     currency: 'usd',
@@ -62,6 +63,7 @@ export default async function handler(
     // relation between the Product and Order models in your Prisma schema. The
     // `create` operation is given an array of product objects, each including
     // product details like name, description, unit_amount, image, & quantity.
+    // Simply map over items in the `cart` and save it to the database.
     products: {
       create: items.map((item: any) => ({
         name: item.name,
@@ -72,15 +74,14 @@ export default async function handler(
       })),
     },
   };
+
+  // STRIPE: SAVE ORDER IN PRISMA ⭐️ (Next)
   // This object can then be used with Prisma client `create` method to create
   // a new `Order` record in your db, along with associated Product records. Note
   // this assumes you have Order & Product models defined in your Prisma schema,
   // with appropriate relations to each other and to the User model. Also assumes
   // you've properly initialized Prisma client & are using it in an asynchronous
   // function, as the Prisma client's `create` method returns a Promise.
-
-  // STRIPE: SAVE ORDER IN PRISMA ⭐️
-  // ! AFTER CREATING THE PRISMA ORDER WE SAVE IT HERE (Saving orders chapter)
 
   // If we signed in and we have a session we return a 200 response!
   res.status(200).json({ userSession });

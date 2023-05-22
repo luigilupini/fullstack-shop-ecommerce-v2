@@ -64,7 +64,7 @@ export default function Cart() {
               <motion.article key={item.id} layout className="flex gap-2 py-4">
                 <Image
                   className="object-cover w-24 h-24 rounded-full shadow"
-                  src={item.images}
+                  src={item.image}
                   alt={item.name}
                   width={120}
                   height={120}
