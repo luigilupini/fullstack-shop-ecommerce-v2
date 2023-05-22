@@ -9,20 +9,20 @@
 // customizable components that collect and validate user input. When creating a
 // instance of `Elements` you can pass in `elements.Options` object to configure
 // certain aspects of the `Elements` group.
-import { loadStripe } from '@stripe/stripe-js';
+import { StripeElementsOptions, loadStripe } from '@stripe/stripe-js';
 
 // STRIPE: ELEMENTS FOR USING CARD ELEMENT ⭐️
-// Our `react-stripe-js` library provides a set of React components `Element` to
-// facilitate integration with the sStripe API. By using `loadStripe`, we async
-// load and initialize a Stripe object. The Promise returned by `loadStripe` is
-// passed as a prop to the `Elements` provider. This way, any descendants of our
-// Elements context in our component tree has access to the Stripe instance once
-// the Promise resolves.
+// A Elements provider allow you to use Element components and access the Stripe
+// object in any nested component. Render this Elements "provider" at a root of
+// your React app so that it is available everywhere you need it. Use a Elements
+// provider to invoke `loadStripe` with your publishable key. That function will
+// asynchronously load a Stripe.js script and initialize a Stripe object.
 import { Elements } from '@stripe/react-stripe-js';
 
 import { useCartStore } from '@/zustand/store';
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
+import CheckoutForm from './CheckoutForm';
 
 // STRIPE: LOAD STRIPE PROMISE ⭐️
 // Since environment variables are server-side constructs, they are not readily
@@ -30,12 +30,20 @@ import { useRouter } from 'next/navigation';
 // object in the Next config file to expose certain environment variables to the
 // client-side. Alternatively, you can also prefix the environment variable with
 // `NEXT_PUBLIC_` to make them available in the client browser.
+
 // const promiseOops = loadStripe(process.env.STRIPE_PUBLISHABLE_KEY!); // ❌
 const promise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!); // ✅
+
 // This is a secure way to use variables that you need on the client side, but
 // remember to never expose sensitive secrets this way. Stripe publishable key
 // is safe to use in the browser, but your secret key should never be exposed.
 
+// STRIPE: WHAT THIS COMPONENT DOES ⭐️
+// This component is responsible for loading the stripe library and initializing
+// stripe elements for us and additionally it also creates a payment intent for
+// us using the payment API route `create-payment-intent`. Either it creates a
+// new payment intent or updates a existing one. We use Zustand to manage state
+// of the cart and what payment intent stage we are in.
 export default function Checkout() {
   // ZUSTAND: CONSUMING THE STORE ⭐️
   const cartStore = useCartStore();
@@ -82,12 +90,12 @@ export default function Checkout() {
       }),
     })
       .then((res) => {
+        // STRIPE: UNAUTHENTICATED USER WILL NAVIGATE TO SIGNIN PAGE ⭐️
         // By using useRouter we can access the query object. If the user is not
         // authenticated, navigate them to the api signin page.
         if (res.status === 403) {
           return router.push('/api/auth/signin');
         }
-
         // STRIPE: ASSOCIATE CLIENT SECRET WITH PAYMENT INTENT ⭐️
         // Here we condition if the user's not authenticated to return them to our
         // home route/page. Otherwise if logged in, we want to set the new payment
@@ -96,14 +104,32 @@ export default function Checkout() {
         return res.json();
       })
       .then((data) => {
+        // STRIPE: ASSOCIATE CLIENT SECRET WITH PAYMENT INTENT ⭐️
+        // If logged in, we want to set the new payment intent to a response we
+        // get from a our custom payment API route. With a client secret we have
+        // the ability to continue with the payment process.
         setClientSecret(data.paymentIntent.client_secret);
         cartStore.setPaymentIntent(data.paymentIntent.id);
       });
   }, []);
 
+  const options: StripeElementsOptions = {
+    clientSecret,
+    appearance: {
+      theme: 'stripe',
+      labels: 'floating',
+    },
+  };
+
   return (
     <div>
-      <h1>Checkout</h1>
+      {clientSecret && (
+        <div>
+          <Elements options={options} stripe={promise}>
+            <CheckoutForm clientSecret={clientSecret} />
+          </Elements>
+        </div>
+      )}
     </div>
   );
 }

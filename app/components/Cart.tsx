@@ -46,15 +46,27 @@ export default function Cart() {
       <motion.section
         layout
         onClick={(e) => e.stopPropagation()}
-        className="absolute top-0 right-0 w-8/12 h-screen p-12 overflow-y-scroll text-gray-700 bg-white lg:w-2/5"
+        className="absolute top-0 right-0 w-8/12 h-screen p-12 overflow-y-scroll text-gray-700 bg-white shadow-md lg:w-2/5"
       >
-        <div className="flex items-center justify-between mb-12">
-          <h1 className="text-2xl font-bold">Your shopping cart</h1>
-          <CgClose
-            className="w-6 h-6 cursor-pointer"
-            onClick={() => cartStore.toggleCart()}
-          />
-        </div>
+        {/* Conditional Headings */}
+        {cartStore.onCheckout === 'cart' && (
+          <div className="flex items-center justify-between mb-12">
+            <h1 className="text-2xl font-bold">Your shopping cart</h1>
+            <CgClose
+              className="w-6 h-6 cursor-pointer"
+              onClick={() => cartStore.toggleCart()}
+            />
+          </div>
+        )}
+        {cartStore.onCheckout === 'checkout' && (
+          <div className="flex items-center justify-between mb-12">
+            <h1 className="text-2xl font-bold">Check your cart</h1>
+            <CgClose
+              className="w-6 h-6 cursor-pointer"
+              onClick={() => cartStore.setCheckout('cart')}
+            />
+          </div>
+        )}
 
         {/* Items in Cart */}
         {cartStore.onCheckout === 'cart' && (
@@ -91,7 +103,7 @@ export default function Cart() {
         )}
 
         {/* Total */}
-        {cartStore.cart.length > 0 && (
+        {cartStore.cart.length > 0 && cartStore.onCheckout === 'cart' ? (
           <motion.div layout>
             <p className="py-2 mt-6">
               <span className="font-semibold">Total:</span>{' '}
@@ -104,7 +116,7 @@ export default function Cart() {
               Checkout
             </button>
           </motion.div>
-        )}
+        ) : null}
 
         {/* Checkout Form */}
         {cartStore.onCheckout === 'checkout' && <Checkout />}
