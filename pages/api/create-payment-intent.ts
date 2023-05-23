@@ -15,6 +15,7 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY as string, {
 const prisma = new PrismaClient();
 
 const calcOrderAmount = (items: AddCartType[]) => {
+  console.log('create-payment-intent:', items);
   const totalPrice = items.reduce((acc, item) => {
     return acc + item.unit_amount! * item.quantity!;
   }, 0);

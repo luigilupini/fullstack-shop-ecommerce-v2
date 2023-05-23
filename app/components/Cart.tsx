@@ -30,6 +30,7 @@ import OrderConfirmed from './OrderConfirmed';
 
 export default function Cart() {
   const cartStore = useCartStore();
+  console.log('<Cart>: ', cartStore);
   // Reduce to get total price:
   const totalPrice = cartStore.cart.reduce((acc, item) => {
     return acc + item.unit_amount! * item.quantity!;
@@ -41,7 +42,7 @@ export default function Cart() {
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
       onClick={() => cartStore.toggleCart()}
-      className="fixed top-0 bottom-0 left-0 right-0 w-full h-screen bg-black/25 backdrop-blur-sm"
+      className="fixed top-0 bottom-0 left-0 right-0 z-50 w-full h-screen bg-black/25 backdrop-blur-sm"
     >
       {/* Shopping Panel */}
       <motion.section
@@ -124,7 +125,7 @@ export default function Cart() {
         {cartStore.onCheckout === 'success' && <OrderConfirmed />}
 
         {/* Empty Cart Status */}
-        {!cartStore.cart.length && cartStore.onCheckout === 'cart' && (
+        {cartStore.cart.length === 0 && cartStore.onCheckout === 'cart' && (
           <motion.div
             initial={{ scale: 0.5, rotateZ: -10, opacity: 0 }}
             animate={{ scale: 1, rotateZ: 0, opacity: 0.75 }}

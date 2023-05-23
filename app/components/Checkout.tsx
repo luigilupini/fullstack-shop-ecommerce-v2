@@ -24,6 +24,9 @@ import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import CheckoutForm from './CheckoutForm';
 
+import OrderAnimation from './OrderAnimation';
+import { motion } from 'framer-motion';
+
 // STRIPE: LOAD STRIPE PROMISE ⭐️
 // Since environment variables are server-side constructs, they are not readily
 // available on the client-side in a Next app. You can use `publicRuntimeConfig`
@@ -124,12 +127,22 @@ export default function Checkout() {
   return (
     <div>
       {clientSecret && (
-        <div>
+        <motion.div
+          initial={{ scale: 0 }}
+          animate={{ scale: 1 }}
+          exit={{ scale: 0 }}
+          transition={{
+            delay: 1,
+            type: 'spring',
+            duration: 0.5,
+          }}
+        >
           <Elements options={options} stripe={promise}>
             <CheckoutForm clientSecret={clientSecret} />
           </Elements>
-        </div>
+        </motion.div>
       )}
+      {!clientSecret && <OrderAnimation />}
     </div>
   );
 }
