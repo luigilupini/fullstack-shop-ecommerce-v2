@@ -19,7 +19,7 @@ import { StripeElementsOptions, loadStripe } from '@stripe/stripe-js';
 // asynchronously load a Stripe.js script and initialize a Stripe object.
 import { Elements } from '@stripe/react-stripe-js';
 
-import { useCartStore } from '@/zustand/store';
+import { useCartStore, useThemeStore } from '@/zustand/store';
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import CheckoutForm from './CheckoutForm';
@@ -50,6 +50,8 @@ const promise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!); // 
 export default function Checkout() {
   // ZUSTAND: CONSUMING THE STORE ⭐️
   const cartStore = useCartStore();
+  const themeStore = useThemeStore();
+
   // Every payment intent contain a `clientSecret`. The client secret is used by
   // the Stripe SDK to confirm the payment intent. Basically a key unique to the
   // individual/payment that Stripe use to track the state of the intent. On the
@@ -58,6 +60,9 @@ export default function Checkout() {
   // confirming order, updating order, etc... We use Zustand to manage the state
   // of the cart and what payment intent stage we are in.
   const [clientSecret, setClientSecret] = useState('');
+  const [stripeTheme, setStripeTheme] = useState<
+    'flat' | 'stripe' | 'night' | 'none'
+  >('stripe');
 
   const router = useRouter();
 
@@ -76,6 +81,10 @@ export default function Checkout() {
   // transaction, rather than an order. But when building store, a user's order
   // includes multiple items, those usually covered by a single PaymentIntent.
   useEffect(() => {
+    // THEME: SET MODE HERE
+    if (themeStore.mode === 'dark') setStripeTheme('night');
+    if (themeStore.mode === 'light') setStripeTheme('stripe');
+
     // STRIPE: DEFINE AN API ROUTE ⭐️
     // Here we passing our payment data to this API route.
     fetch('/api/create-payment-intent', {
@@ -119,7 +128,7 @@ export default function Checkout() {
   const options: StripeElementsOptions = {
     clientSecret,
     appearance: {
-      theme: 'stripe',
+      theme: stripeTheme,
       labels: 'floating',
     },
   };

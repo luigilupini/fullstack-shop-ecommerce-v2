@@ -1,9 +1,8 @@
 'use client';
 
 import { AddCartType } from '@/types/AddCartType';
-import { SearchParamTypes } from '@/types/SearchParamType';
 import { useCartStore } from '@/zustand/store';
-import React from 'react';
+import { useState } from 'react';
 
 export default function addCartBtn({
   id,
@@ -12,23 +11,26 @@ export default function addCartBtn({
   unit_amount,
   quantity,
 }: AddCartType) {
+  const [added, setAdded] = useState(false);
   const cartStore = useCartStore();
+
+  const handleAddToCart = () => {
+    cartStore.addProduct({ id, name, image, unit_amount, quantity });
+    setAdded(true);
+    setTimeout(() => {
+      setAdded(false);
+    }, 1000);
+  };
+
   return (
-    <>
+    <div className="pt-2 mt-auto">
       <button
-        className="px-6 py-2 mt-12 font-medium text-white duration-300 bg-gray-800 rounded-md w-fit hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2"
-        onClick={() =>
-          cartStore.addProduct({
-            id,
-            name,
-            image,
-            unit_amount,
-            quantity,
-          })
-        }
+        onClick={handleAddToCart}
+        className="btn btn-primary"
+        disabled={added}
       >
-        Add to cart
+        {!added ? <span>Add to cart </span> : <span>Adding to cart</span>}
       </button>
-    </>
+    </div>
   );
 }

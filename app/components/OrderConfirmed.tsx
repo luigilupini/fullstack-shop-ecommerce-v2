@@ -58,7 +58,7 @@ export default function OrderConfirmed() {
                 handleCheckout();
               }, 1000);
             }}
-            className="px-4 py-2 font-medium text-white bg-orange-500 rounded-md hover:bg-orange-600 focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75"
+            className="my-4 btn btn-primary"
           >
             Check your Order
           </button>

@@ -1,5 +1,6 @@
 'use client';
 
+import { useThemeStore } from '@/zustand/store';
 import { ReactNode, useEffect, useState } from 'react';
 
 // ZUSTAND: HYDRATE COMPONENT TO HANDLE CLIENT-SIDE RENDERING (STEP 4) ⭐️
@@ -18,6 +19,7 @@ interface Props {
 
 export default function Hydration({ children }: Props) {
   const [isHydrated, setIsHydrated] = useState(false);
+  const themeStore = useThemeStore();
   // Wait until Next.js completed hydration before rendering `children`:
   useEffect(() => setIsHydrated(true), []);
   // If hydration is complete, render `children`. If not render loading status.
@@ -27,11 +29,15 @@ export default function Hydration({ children }: Props) {
   return (
     <>
       {!isHydrated ? (
-        <div className="flex items-center justify-center min-h-screen font-semibold text-gray-700">
-          Loading...
-        </div>
+        <body className="flex items-center justify-center w-full h-full">
+          <code className="px-3 py-2 text-lg rounded-md bg-base-200">
+            Loading...
+          </code>
+        </body>
       ) : (
-        children
+        <body data-theme={themeStore.mode} className="px-4 lg:px-48 font-karla">
+          {children}
+        </body>
       )}
     </>
   );

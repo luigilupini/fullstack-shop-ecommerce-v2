@@ -33,9 +33,9 @@ export default function Product({
           priority
         />
       </div>
-      <div className="px-2 py-4 bg-gray-50/95">
+      <div className="px-2 py-4">
         <h1 className="text-[15px] font-bold">{name}</h1>
-        <h2 className="text-sm text-gray-700">
+        <h2 className="text-sm opacity-80">
           {unit_amount !== null ? priceFormat(unit_amount) : 'N/A'}
         </h2>
       </div>

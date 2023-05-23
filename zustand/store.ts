@@ -226,3 +226,23 @@ export const useCartStore = create(persistedSetupFunction);
 This code is equivalent to your original code, but it separates each step into
 its own line to make it clearer what's happening. I hope this helps clarify how
 `persist` and `create` work together in Zustand! */
+
+type ThemeActions = {
+  toggleTheme: (mode: 'light' | 'dark') => void;
+};
+
+type ThemeStateType = {
+  mode: 'light' | 'dark';
+} & ThemeActions;
+
+export const useThemeStore = create<ThemeStateType>()(
+  persist(
+    (set) => ({
+      mode: 'light',
+      toggleTheme: (theme) => set((state) => ({ mode: theme })),
+    }),
+    {
+      name: 'theme-store',
+    }
+  )
+);

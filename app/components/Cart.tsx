@@ -48,7 +48,7 @@ export default function Cart() {
       <motion.section
         layout
         onClick={(e) => e.stopPropagation()}
-        className="absolute top-0 right-0 w-8/12 h-screen p-12 overflow-y-scroll text-gray-700 bg-white shadow-md lg:w-2/5"
+        className="absolute top-0 right-0 w-8/12 h-screen p-12 overflow-y-scroll shadow-md bg-base-100 lg:w-2/5"
       >
         {/* Conditional Headings */}
         {cartStore.onCheckout === 'cart' && (
@@ -75,13 +75,17 @@ export default function Cart() {
           <>
             {cartStore.cart.map((item) => (
               /* Each Item */
-              <motion.article key={item.id} layout className="flex gap-2 py-4">
+              <motion.article
+                key={item.id}
+                layout
+                className="flex gap-4 p-4 mt-3 rounded-lg bg-base-200"
+              >
                 <Image
                   className="object-cover w-24 h-24 rounded-full shadow"
                   src={item.image}
                   alt={item.name}
-                  width={120}
-                  height={120}
+                  width={110}
+                  height={110}
                   priority
                 />
                 <motion.div className="flex flex-col">
@@ -113,7 +117,7 @@ export default function Cart() {
             </p>
             <button
               onClick={() => cartStore.setCheckout('checkout')}
-              className="w-full px-4 py-2 mt-2 text-sm font-semibold text-white bg-black rounded hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2"
+              className="w-full my-4 btn btn-primary"
             >
               Checkout
             </button>

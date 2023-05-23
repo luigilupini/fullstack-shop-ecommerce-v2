@@ -16,7 +16,7 @@ import { signIn, signOut } from 'next-auth/react';
 import Image from 'next/image';
 import Link from 'next/link';
 
-import shoppingCart from '@/public/shopping-cart.png';
+import { FiShoppingCart } from 'react-icons/fi';
 
 import Cart from './Cart';
 import { useCartStore } from '@/zustand/store';
@@ -35,6 +35,7 @@ import { useCartStore } from '@/zustand/store';
 // So, we need to ensure that the components `AnimatePresence` wraps have a condition
 // that determines if they unmount, like our short-circuiting `&&` operator below.
 import { AnimatePresence, motion } from 'framer-motion';
+import ThemeBtn from './ThemeBtn';
 // ! IMPORTANT: ANIMATE PRESENCE
 // AnimatePresence should be placed as close as possible to the dynamic content
 // that it's handling, typically at the point where a component is conditionally
@@ -49,26 +50,22 @@ import { AnimatePresence, motion } from 'framer-motion';
 export default function Navbar({ user }: Session) {
   // ZUSTAND: CONSUMING THE STORE ⭐️
   const cartStore = useCartStore();
-
+  const handleBlurOut = () => {
+    if (document.activeElement instanceof HTMLElement) {
+      document.activeElement.blur();
+    }
+  };
   return (
     <nav className="flex items-center justify-between py-12">
       <Link href={'/'}>
-        <h1>Superdry Clone</h1>
+        <h1 className="text-lg">Superdry Clone</h1>
       </Link>
-      <ul className="flex items-center justify-center gap-6">
+      <ul className="flex items-center justify-center gap-8">
         <li
-          className="relative text-[26px] text-gray-800 cursor-pointer"
+          className="relative text-3xl cursor-pointer"
           onClick={() => cartStore.toggleCart()}
         >
-          <Image
-            src={shoppingCart}
-            height={36}
-            width={36}
-            alt="Shopping Cart"
-            className="object-cover cursor-pointer"
-            priority
-          />
-
+          <FiShoppingCart />
           <AnimatePresence>
             {/* Required condition when a component is removed from React tree */}
             {cartStore.cart.length > 0 && (
@@ -76,7 +73,7 @@ export default function Navbar({ user }: Session) {
                 animate={{ scale: 1 }}
                 initial={{ scale: 0 }}
                 exit={{ scale: 0 }}
-                className="absolute flex items-center justify-center w-5 h-5 text-xs font-bold text-white bg-orange-500 border border-orange-500 rounded-full shadow-lg left-5 bottom-4"
+                className="absolute flex items-center justify-center w-4 h-4 text-xs font-bold text-white rounded-full shadow-md bg-primary left-4 bottom-4"
               >
                 {cartStore.cart.length}
               </motion.span>
@@ -85,23 +82,44 @@ export default function Navbar({ user }: Session) {
         </li>
         {/* > If the user is not signed in: */}
         {!user && (
-          <li className="px-2 py-1 text-sm text-white bg-gray-800 rounded-md">
+          <li className="px-2 py-1 text-sm text-white rounded-md bg-primary">
             <button onClick={() => signIn()}>Sign in</button>
           </li>
         )}
+        <ThemeBtn />
         {user && (
-          <li>
-            <Link href={'/dashboard'}>
-              <Image
-                src={user?.image as string}
-                alt={user?.name as string}
-                width={38}
-                height={38}
-                className="object-cover rounded-full cursor-pointer"
-                priority
-              />
-            </Link>
-          </li>
+          <div className="cursor-pointer dropdown dropdown-end avatar">
+            <Image
+              src={user?.image as string}
+              alt={user?.name as string}
+              width={38}
+              height={38}
+              className="object-cover rounded-full shadow cursor-pointer mask mask-hexagon"
+              priority
+              tabIndex={0}
+            />
+            <ul
+              tabIndex={0}
+              className="w-48 p-4 space-y-4 text-sm shadow-lg dropdown-content menu bg-base-100 rounded-box"
+            >
+              <Link
+                className="p-4 rounded-md hover:bg-base-300"
+                href={'/dashboard'}
+                onClick={handleBlurOut}
+              >
+                My Orders
+              </Link>
+              <li
+                className="p-4 rounded-md hover:bg-base-300"
+                onClick={() => {
+                  handleBlurOut();
+                  signOut();
+                }}
+              >
+                Sign out
+              </li>
+            </ul>
+          </div>
         )}
       </ul>
       <AnimatePresence>

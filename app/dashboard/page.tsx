@@ -27,11 +27,19 @@ async function fetchOrders() {
 
 export default async function page() {
   const orders = await fetchOrders();
-  let today = new Date();
+  let today = (date: string | number | Date) => {
+    const day = new Date(date).getDate();
+    const month = new Date(date).getMonth();
+    const year = new Date(date).getFullYear();
+    const time = new Date(date).toLocaleTimeString();
+
+    return `${day}/${month}/${year} - ${time}`;
+  };
+
   console.log('<Dashboard> :', orders);
   if (orders === null) {
     return (
-      <div className="text-gray-700">
+      <div>
         <h1 className="text-2xl font-bold">
           Dashboard <span className="font-normal">| Oops!</span>
         </h1>
@@ -41,7 +49,7 @@ export default async function page() {
   }
   if (orders.length === 0) {
     return (
-      <div className="text-gray-700">
+      <div>
         <h1 className="text-2xl font-bold">
           Dashboard <span className="font-normal">| Oops!</span>
         </h1>
@@ -50,7 +58,7 @@ export default async function page() {
     );
   }
   return (
-    <div className="h-screen text-gray-700">
+    <div className="pb-6 overflow-hidden">
       <h1 className="text-2xl font-bold">
         Dashboard <span className="font-normal">| Your Orders</span>
       </h1>
@@ -59,13 +67,11 @@ export default async function page() {
         {orders?.map((order) => (
           <div
             key={order.id}
-            className="relative flex flex-col gap-1 p-2 border-2 border-gray-100 rounded-lg bg-gray-50"
+            className="relative flex flex-col gap-1 p-2 px-4 rounded-lg shadow-sm bg-base-200"
           >
             <h2>Order: {order.id}</h2>
-            <p className="text-[13px] text-gray-500">
-              {today.toLocaleString('en-US')}
-            </p>
-            <p className="absolute text-[13px] top-3 right-3">
+            <p className="text-[12px]">{today(order.createdDate)}</p>
+            <p className="absolute text-[13px] top-4 right-3">
               Payment:{' '}
               <span
                 className={`${

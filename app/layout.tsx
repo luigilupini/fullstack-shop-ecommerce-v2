@@ -1,5 +1,5 @@
 import './globals.css';
-import { Karla } from 'next/font/google';
+import { Karla, Lobster_Two } from 'next/font/google';
 import Navbar from './components/Navbar';
 
 // NEXTAUTH: GETTING SESSION INFORMATION ⭐️
@@ -25,6 +25,12 @@ export const metadata = {
 
 const karla = Karla({
   subsets: ['latin-ext'],
+  variable: '--font-karla',
+});
+const lobster = Lobster_Two({
+  weight: '700',
+  subsets: ['latin'],
+  variable: '--font-lobster',
 });
 
 interface Props {
@@ -34,13 +40,11 @@ interface Props {
 export default async function RootLayout({ children }: Props) {
   const session = await getServerSession(authOptions);
   return (
-    <html lang="en">
-      <body className={`${karla.className} max-w-6xl px-4 mx-auto`}>
-        <Hydration>
-          <Navbar user={session?.user} expires={session?.expires as string} />
-          {children}
-        </Hydration>
-      </body>
+    <html lang="en" className={`${karla.variable} ${lobster.variable}`}>
+      <Hydration>
+        <Navbar user={session?.user} expires={session?.expires as string} />
+        {children}
+      </Hydration>
     </html>
   );
 }

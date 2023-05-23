@@ -49,7 +49,7 @@ export default function CheckoutForm({ clientSecret }: Props) {
   };
 
   return (
-    <form onSubmit={handleSubmit} id="payment-form" className="text-gray-600">
+    <form onSubmit={handleSubmit} id="payment-form">
       <PaymentElement id="payment-element" options={{ layout: 'tabs' }} />
       <h1 className="py-4 mt-4 text-sm font-semibold ">
         Total: {priceFormat(totalPrice)}
@@ -57,7 +57,7 @@ export default function CheckoutForm({ clientSecret }: Props) {
       <button
         id="submit"
         disabled={isLoading || !stripe || !elements}
-        className="w-full px-4 py-2 font-bold text-white transition bg-orange-500 rounded-md shadow hover:bg-orange-700 disabled:opacity-50 disabled:cursor-not-allowed"
+        className="w-full my-4 btn btn-primary"
       >
         {isLoading ? <span>Processing</span> : <span>Pay now</span>}
       </button>
