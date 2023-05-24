@@ -94,23 +94,23 @@ export default function Navbar({ user }: Session) {
               alt={user?.name as string}
               width={38}
               height={38}
-              className="object-cover rounded-full shadow cursor-pointer"
+              className="object-cover rounded-full shadow cursor-pointer bg-base-100"
               priority
               tabIndex={0}
             />
             <ul
               tabIndex={0}
-              className="w-48 p-4 space-y-4 text-sm shadow-lg dropdown-content menu bg-base-100 rounded-box"
+              className="w-48 p-4 space-y-4 text-sm shadow-lg dropdown-content menu bg-base-200 rounded-box"
             >
               <Link
-                className="p-4 rounded-md hover:bg-base-300"
+                className="p-4 rounded-md hover:bg-base-100"
                 href={'/dashboard'}
                 onClick={handleBlurOut}
               >
                 My Orders
               </Link>
               <li
-                className="p-4 rounded-md hover:bg-base-300"
+                className="p-4 rounded-md hover:bg-base-100"
                 onClick={() => {
                   handleBlurOut();
                   signOut();
