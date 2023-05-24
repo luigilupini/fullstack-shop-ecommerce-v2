@@ -15,9 +15,10 @@ import GoogleProvider from 'next-auth/providers/google';
 import { PrismaAdapter } from '@next-auth/prisma-adapter';
 // This is the main entry point to your database, allowing you to make queries
 // and perform operations on your data via a helpful client API library.
-import { PrismaClient } from '@prisma/client';
-// Creating a new instance of PrismaClient, which we interact with the database.
-const prisma = new PrismaClient();
+
+// PRISMA: BEST PRACTICE FOR INSTANTIATING PRISMA CLIENT WITH NEXT.JS ⭐️
+// import { PrismaClient } from '@prisma/client';
+import { prisma } from '@/prisma/prisma';
 
 // STRIPE: USING EVENT HANDLERS WITH STRIPE API (STEP 1) ⭐️
 import Stripe from 'stripe';

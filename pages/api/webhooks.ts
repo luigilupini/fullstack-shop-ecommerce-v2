@@ -1,5 +1,12 @@
 import Stripe from 'stripe';
-import { PrismaClient } from '@prisma/client';
+
+// PRISMA: BEST PRACTICE FOR INSTANTIATING PRISMA CLIENT WITH NEXT.JS ⭐️
+// import { PrismaClient } from '@prisma/client';
+import { prisma } from '@/prisma/prisma';
+// We need to instantiate a new Prisma client to update the order status. Notice
+// that the objective of this webhook is to update the `order` status in our db.
+// We use the `update` method from Prisma to update the order status.
+
 import { buffer } from 'micro';
 import { NextApiRequest, NextApiResponse } from 'next';
 
@@ -9,10 +16,6 @@ export const config = {
     bodyParser: false,
   },
 };
-// We need to instantiate a new Prisma client to update the order status. Notice
-// that the objective of this webhook is to update the `order` status in our db.
-// We use the `update` method from Prisma to update the order status.
-const prisma = new PrismaClient();
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY as string, {
   apiVersion: '2022-11-15',

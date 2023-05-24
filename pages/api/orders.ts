@@ -1,10 +1,12 @@
 import { NextApiRequest, NextApiResponse } from 'next';
 import Stripe from 'stripe';
-import { PrismaClient } from '@prisma/client';
+
 import { getServerSession } from 'next-auth';
 import { authOptions } from './auth/[...nextauth]';
 
-const prisma = new PrismaClient();
+// PRISMA: BEST PRACTICE FOR INSTANTIATING PRISMA CLIENT WITH NEXT.JS ⭐️
+// import { PrismaClient } from '@prisma/client';
+import { prisma } from '@/prisma/prisma';
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY as string, {
   apiVersion: '2022-11-15',

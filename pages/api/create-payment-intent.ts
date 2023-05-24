@@ -1,7 +1,10 @@
 import { NextApiRequest, NextApiResponse } from 'next';
 
 import Stripe from 'stripe';
-import { PrismaClient } from '@prisma/client';
+
+// PRISMA: BEST PRACTICE FOR INSTANTIATING PRISMA CLIENT WITH NEXT.JS ⭐️
+// import { PrismaClient } from '@prisma/client';
+import { prisma } from '@/prisma/prisma';
 
 import { authOptions } from './auth/[...nextauth]';
 import { getServerSession } from 'next-auth';
@@ -11,8 +14,6 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY as string, {
   // Setting the Stripe API version to be used.
   apiVersion: '2022-11-15',
 });
-
-const prisma = new PrismaClient();
 
 const calcOrderAmount = (items: AddCartType[]) => {
   console.log('create-payment-intent:', items);

@@ -94,7 +94,7 @@ export default function Navbar({ user }: Session) {
               alt={user?.name as string}
               width={38}
               height={38}
-              className="object-cover rounded-full shadow cursor-pointer mask mask-hexagon"
+              className="object-cover rounded-full shadow cursor-pointer"
               priority
               tabIndex={0}
             />
