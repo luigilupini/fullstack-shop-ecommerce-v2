@@ -81,7 +81,7 @@ export default async function handler(
       const paymentIntent = event.data.object;
       console.log('Payment intent was created');
       break;
-    // 2) CASE: UPDATE ORDER STATUS
+    // 2) CASE: UPDATE ORDER STATUS TO "COMPLETE"
     // Here a charge was just made at Stripe and it succeeded. In this case, we
     // update the corresponding order in our db from "pending" to "complete". We
     // use the `where` argument from Prisma to find the order by its payment ID.

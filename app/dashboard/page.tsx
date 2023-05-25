@@ -34,11 +34,9 @@ export default async function page() {
     const month = new Date(date).getMonth();
     const year = new Date(date).getFullYear();
     const time = new Date(date).toLocaleTimeString();
-
     return `${day}/${month}/${year} - ${time}`;
   };
-
-  console.log('<Dashboard> :', orders);
+  // console.log('<Dashboard> :', orders);
   if (orders === null) {
     return (
       <div>
@@ -117,7 +115,7 @@ export default function Dashboard() {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
   const fetchOrders = async () => {
-    const res = await fetch("/api/get-orders")
+    const res = await fetch("/api/orders")
     const data = await res.json()
     return data
   }
